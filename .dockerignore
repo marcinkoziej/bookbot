@@ -1,0 +1,8 @@
+.env
+.git
+node_modules
+npm-debug.log
+credentials.bash
+start.sh
+test_optout.js
+test_search.js
