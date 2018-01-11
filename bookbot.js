@@ -32,6 +32,7 @@ class Bookbot {
     log(`send attachment ${filepath}`)
     const msg = {
       sender: process.env['EMAIL'],
+      from: `Akcja Bot <${process.env['EMAIL']}>`,
       to: process.env['TO'],
       subject: 'Dzisiejsza gazeta',
       html: 'W załącznku dzisiejsza gazeta &lt;3',
@@ -88,4 +89,5 @@ const morningGazeta = () => {
     .then(x => console.info('Morning Gazeta delivered!'))
 }
 
+morningGazeta()
 new CronJob('0 0 7 * *', morningGazeta, null, true, 'Europe/Warsaw')
