@@ -13,7 +13,7 @@ const log = debug('bookbot')
 
 nightmareDownloadManager(nightmare)
 
-class Bookbot {
+export class Bookbot {
   constructor() {
     this.mailer = nodemailer.createTransport({
       host: process.env['SMTP_SERVER'],
@@ -24,7 +24,7 @@ class Bookbot {
         pass: process.env['SMTP_PASSWORD']
       }
     })
-    this.browser = new nightmare({show: true});
+    this.browser = new nightmare({show: !(process.env['DISPLAY']===null)});
 
   }
 
@@ -81,7 +81,7 @@ class Bookbot {
   }
 }
 
-const morningGazeta = () => {
+export const morningGazeta = () => {
   log('morningGazeta job started')
   const bot = new Bookbot()
   bot.getGazeta()
@@ -89,5 +89,4 @@ const morningGazeta = () => {
     .then(x => console.info('Morning Gazeta delivered!'))
 }
 
-morningGazeta()
 new CronJob('0 0 7 * *', morningGazeta, null, true, 'Europe/Warsaw')
