@@ -8,8 +8,14 @@ import path from 'path'
 import debug from 'debug'
 import when from 'when'
 import {CronJob} from 'cron'
+import getopt from 'node-getopt'
 
 const log = debug('bookbot')
+const args = getopt.create([
+  ['n', '', 'run now'],
+  ['c', '', 'run cron'],
+  ['C', '', 'cron string'], 
+]).bindHelp().parseSystem()
 
 nightmareDownloadManager(nightmare)
 
@@ -89,5 +95,11 @@ const morningGazeta = () => {
     .then(x => console.info('Morning Gazeta delivered!'))
 }
 
-morningGazeta()
-new CronJob('0 0 7 * *', morningGazeta, null, true, 'Europe/Warsaw')
+if (args.options.n) {
+  morningGazeta()
+}
+
+if (args.options.c) {
+  let cronStr = args.options.C || '0 0 7 * *'
+  new CronJob(cronStr, morningGazeta, null, true, 'Europe/Warsaw')
+}

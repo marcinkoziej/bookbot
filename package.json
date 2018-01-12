@@ -19,6 +19,7 @@
     "moment": "^2.20.1",
     "nightmare": "^2.10.0",
     "nightmare-download-manager": "^0.2.4",
+    "node-getopt": "^0.2.3",
     "nodemailer": "^4.4.1",
     "when": "^3.7.8"
   }
