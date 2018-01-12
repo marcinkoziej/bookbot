@@ -6,7 +6,7 @@
   "scripts": {
     "watch": "babel -w -s inline -d build *.js --presets=es2015",
     "build": "babel -d build *.js --presets=es2015",
-    "start": "npm run build && node build/bookbot.js"
+    "start": "npm run build && node build/bookbot.js -c"
   },
   "author": "",
   "license": "ISC",

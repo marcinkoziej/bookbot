@@ -100,6 +100,7 @@ if (args.options.n) {
 }
 
 if (args.options.c) {
-  let cronStr = args.options.C || '0 0 7 * *'
-  new CronJob(cronStr, morningGazeta, null, false, 'Europe/Warsaw')
+  let cronStr = args.options.C || '0 0 7 * * *'
+  log(`Newspaper delivery schedule: ${cronStr}`)
+  new CronJob(cronStr, morningGazeta, null, true, 'Europe/Warsaw')
 }
