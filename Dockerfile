@@ -1,11 +1,16 @@
-FROM node:alpine
+FROM  pichlermi/docker-electron
 
-WORKDIR /usr/src/app
 
-ADD . /usr/src/app 
+WORKDIR /bookbot
 
-RUN npm install
+USER 0
+RUN apt install -y xvfb
+USER 1000
+
+ADD --chown=1000 . /bookbot
+
+RUN  npm install
 
 # EXPOSE 3000
 
-CMD [ "npm", "start" ]
+CMD [ "xvfb-run", "npm", "start" ]

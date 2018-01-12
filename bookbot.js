@@ -19,7 +19,7 @@ const args = getopt.create([
 
 nightmareDownloadManager(nightmare)
 
-class Bookbot {
+export class Bookbot {
   constructor() {
     this.mailer = nodemailer.createTransport({
       host: process.env['SMTP_SERVER'],
@@ -30,7 +30,7 @@ class Bookbot {
         pass: process.env['SMTP_PASSWORD']
       }
     })
-    this.browser = new nightmare({show: true});
+    this.browser = new nightmare({show: !(process.env['DISPLAY']===null)});
 
   }
 
@@ -87,7 +87,7 @@ class Bookbot {
   }
 }
 
-const morningGazeta = () => {
+export const morningGazeta = () => {
   log('morningGazeta job started')
   const bot = new Bookbot()
   bot.getGazeta()
@@ -101,5 +101,5 @@ if (args.options.n) {
 
 if (args.options.c) {
   let cronStr = args.options.C || '0 0 7 * *'
-  new CronJob(cronStr, morningGazeta, null, true, 'Europe/Warsaw')
+  new CronJob(cronStr, morningGazeta, null, false, 'Europe/Warsaw')
 }
