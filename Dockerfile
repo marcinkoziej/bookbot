@@ -1,16 +1,12 @@
-FROM  pichlermi/docker-electron
+FROM akcjademokracja/nightmarejs
 
+WORKDIR /app
 
-WORKDIR /bookbot
-
-USER 0
-RUN apt install -y xvfb
-USER 1000
-
-ADD --chown=1000 . /bookbot
+ADD . /app
 
 RUN  npm install
 
 # EXPOSE 3000
 
 CMD [ "xvfb-run", "npm", "start" ]
+
