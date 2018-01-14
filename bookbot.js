@@ -12,9 +12,11 @@ import getopt from 'node-getopt'
 
 const log = debug('bookbot')
 const args = getopt.create([
-  ['n', '', 'run now'],
+  ['g', '', 'run now'],
+  ['t', '', 'run now'],
   ['c', '', 'run cron'],
-  ['C', '', 'cron string'], 
+  ['T', '=', 'cron string'], 
+  ['G', '=', 'cron string'], 
 ]).bindHelp().parseSystem()
 
 nightmareDownloadManager(nightmare)
@@ -85,6 +87,35 @@ export class Bookbot {
         return filename;
       })
   }
+
+  getTygodnik() {
+    const filename = `./tygodnik-${moment().format('YYYY-MM-DD')}.mobi`
+    this.browser.once('download', (state, downloadItem) => {
+      if(state == 'started'){
+        log(`download started to ${filename}`)
+        this.browser.emit('download', filename, downloadItem);
+      }
+    });
+    return this.browser.downloadManager()
+      .goto('https://www.publio.pl/klient/logowanie.html')
+      .viewport(2014, 768)
+      .type('#j_username', process.env['LOGIN'])
+      .type('#j_password', process.env['PASSWORD'])
+      .click('.btn-login')
+      .wait(1000)
+      .wait('a.username')
+      .goto("https://www.publio.pl/klient/publikacje.html?pressTitle=94542")
+      .wait('.downloadStatus')
+      .click('.downloadStatus .btn-simple')
+      .wait('.productDownloadInfo')
+      .click("input[name^='downloadPackage'][value='6']")
+      .click('.btn-simple.mR10')
+      .waitDownloadsComplete()
+      .end().then(() => {
+        return filename;
+      })
+  }
+
 }
 
 export const morningGazeta = () => {
@@ -95,12 +126,27 @@ export const morningGazeta = () => {
     .then(x => console.info('Morning Gazeta delivered!'))
 }
 
-if (args.options.n) {
+export const sundayTygodnik = () => {
+  log('sundayTygodnik job started')
+  const bot = new Bookbot()
+  bot.getTygodnik()
+    .then(fn => bot.sendAttachment(fn))
+    .then(x => console.info('Sunday Tygodnik delivered!'))
+}
+
+if (args.options.g) {
   morningGazeta()
 }
 
+if (args.options.t) {
+  sundayTygodnik()
+}
+
 if (args.options.c) {
-  let cronStr = args.options.C || '0 0 7 * * *'
-  log(`Newspaper delivery schedule: ${cronStr}`)
-  new CronJob(cronStr, morningGazeta, null, true, 'Europe/Warsaw')
+  let gazetaStr = args.options.G || '0 0 7 * * *'
+  let tygodnikStr = args.options.T || '0 30 7 * * 0'
+  console.log(`gazeta schedule ${gazetaStr}`)
+  new CronJob(gazetaStr, morningGazeta, null, true, 'Europe/Warsaw')
+  console.log(`tygodnik schedule ${tygodnikStr}`)
+  new CronJob(tygodnikStr, sundayTygodnik, null, true, 'Europe/Warsaw')
 }
