@@ -41,7 +41,7 @@ export class Bookbot {
     const msg = {
       sender: process.env['EMAIL'],
       from: `Akcja Bot <${process.env['EMAIL']}>`,
-      to: process.env['TO'],
+      bcc: process.env['TO'],
       subject: 'Dzisiejsza gazeta',
       html: 'W załącznku dzisiejsza gazeta &lt;3',
       attachments: {
