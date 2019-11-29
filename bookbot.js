@@ -143,7 +143,7 @@ if (args.options.t) {
 }
 
 if (args.options.c) {
-  let gazetaStr = args.options.G || '0 0 7 * * *'
+  let gazetaStr = args.options.G || '0 0 7 * * 1-6'
   let tygodnikStr = args.options.T || '0 30 7 * * 0'
   console.log(`gazeta schedule ${gazetaStr}`)
   new CronJob(gazetaStr, morningGazeta, null, true, 'Europe/Warsaw')
