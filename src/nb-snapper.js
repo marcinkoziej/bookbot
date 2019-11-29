@@ -17,7 +17,8 @@ const args = getopt.create([
   ['c', '', 'run cron'],
   ['r', '', 'restore snapshot to db'],
   ['R', '', ''],
-  ['C', '=', 'cron string'],
+  ['S', '=', 'cron string'],
+  ['F', '=', 'cron string'],
   ['n', '=', 'snapshot name'],
   ['s', '', 'start snapshot'],
   ['f', '', 'fetch snapshot'],
@@ -187,8 +188,10 @@ export const fetchSnapshot = (name, filename) => {
 
 
 if (args.options.c) {
-  let crontab = args.options.C || '0 0 7 * * *'
+  let crontab = args.options.S || '0 0 5 * * *'
+  let crontab2 = args.options.F || '0 0 7 * * *'
   new CronJob(crontab, createSnapshot, null, true, 'Europe/Warsaw')
+  new CronJob(crontab2, fetchSnapshot, null, true, 'Europe/Warsaw')
 }
 
 if (args.options.s) {
