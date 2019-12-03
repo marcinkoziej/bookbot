@@ -1,4 +1,4 @@
-FROM akcjademokracja/nightmarejs
+FROM movonw/nightmarejs
 
 WORKDIR /app
 
@@ -8,5 +8,5 @@ RUN  npm install
 
 # EXPOSE 3000
 
-CMD [ "xvfb-run", "npm", "start" ]
+CMD [ "xvfb-run", "npm", "run", "nb-snapper", "--", "-c", "-R", "-D" ]
 
