@@ -172,7 +172,7 @@ export class NBSnapper {
 
 const nameForToday = () => {
   const d = new Date();
-  const ds = `${d.getFullYear()}-${d.getMonth()}-${d.getDay()}`
+  const ds = moment().format('YYYY-MM-DD')
   return {
     name: `Daily snapshot ${ds}`,
     filename: `nb-snapshot-${ds}.db`
