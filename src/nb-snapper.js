@@ -12,7 +12,7 @@ import {CronJob} from 'cron'
 import getopt from 'node-getopt'
 import {exec} from 'child_process'
 
-const log = debug('bookbot')
+const log = debug('nb-snapper')
 const args = getopt.create([
   ['c', '', 'run cron'],
   ['s', '', 'mode: start snapshot'],
@@ -212,6 +212,8 @@ export const fetchSnapshot = (name, filename) => {
 if (args.options.c) {
   let crontab = args.options.S || '0 0 5 * * *'
   let crontab2 = args.options.F || '0 0 7 * * *'
+  log(`Creating snapshot in schedule: ${crontab}`)
+  log(`Fetching snapshot in schedule: ${crontab2}`)
   new CronJob(crontab, createSnapshot, null, true, 'Europe/Warsaw')
   new CronJob(crontab2, fetchSnapshot, null, true, 'Europe/Warsaw')
 }
