@@ -16,12 +16,13 @@ const log = debug('bookbot')
 const args = getopt.create([
   ['c', '', 'run cron'],
   ['r', '', 'restore snapshot to db'],
-  ['R', '', ''],
+  ['R', '', 'restore snapshot'],
   ['S', '=', 'cron string'],
   ['F', '=', 'cron string'],
   ['n', '=', 'snapshot name'],
   ['s', '', 'start snapshot'],
   ['f', '', 'fetch snapshot'],
+  ['D', '', 'delete snapshot after download'],
   ['N', '=', 'snapshot filename'],
 ]).bindHelp().parseSystem()
 
@@ -43,6 +44,10 @@ export class NBSnapper {
     }
     this.database_url = process.env['DATABASE_URL']
     this.browser = new nightmare({show: !(process.env['DISPLAY']===null)});
+    // this.browser.on('page', function(event, msg, resp) {
+    //   log(`${event}: ${msg} -> ${resp}`)
+    //   return true;
+    // })
 
   }
 
@@ -102,7 +107,7 @@ export class NBSnapper {
       .end()
   }
 
-  fetchSnapshot(name='Daily snapshot', filename='snapshot.snap') {
+  fetchSnapshot(name='Daily snapshot', filename='snapshot.snap', remove=true) {
     this.browser.once('download', (state, downloadItem) => {
       if(state == 'started'){
         log(`download started to ${filename}`)
@@ -110,18 +115,30 @@ export class NBSnapper {
       }
     });
 
+
     return this.login()
       .wait(1000)
       .goto(this.nb.url + '/admin/backups')
       .evaluate((name) => {
+        // hijack confirm
+        window.confirm = function(msg) { return true; }
+        // Find snapshot table
         const rows = document.querySelector('table.table').querySelectorAll('tr')
 
+        // look for snapshot by name
         for (const tr of rows) {
           const td = tr.querySelector('td:nth-child(4)')
           if (td && td.innerHTML.includes(name)) {
-            const dlink = tr.querySelector('td:nth-child(3) a')
-            if (dlink) {
-              dlink.click()
+            // find download link and remove link
+            const downloadLink = tr.querySelector('td:nth-child(3) a')
+            const removeLink = tr.querySelector('[data-method="delete"]')
+
+            if (removeLink) {
+              // mark the remove link for later with a class
+              removeLink.classList.add('x-remove-snapshot')
+            }
+            if (downloadLink) {
+              downloadLink.click()
               return true
             }
             return false
@@ -130,7 +147,11 @@ export class NBSnapper {
       }, name)
       .then((downloading) => {
         if (downloading) {
-          return this.browser.waitDownloadsComplete().end()
+          let b = this.browser.waitDownloadsComplete()
+          if (remove) {
+            b = b.click('.x-remove-snapshot').wait(1000)
+          }
+          return b.end()
         } else {
           log(`Snapshot ${name} not ready yet`)
           return this.browser.end()
@@ -179,9 +200,10 @@ export const fetchSnapshot = (name, filename) => {
 
   log(`Fetch snapshot named ${name} to ${filename}`)
   const bot = new NBSnapper()
-  bot.fetchSnapshot(name, filename).then(() => {
+  bot.fetchSnapshot(name, filename, !!args.options.D).then(() => {
+
     if (args.options.r) {
-      bot.restoreSnapshot(filename)
+      return bot.restoreSnapshot(filename)
     }
   })
 }
