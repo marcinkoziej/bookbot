@@ -11,6 +11,7 @@ import when from 'when'
 import {CronJob} from 'cron'
 import getopt from 'node-getopt'
 import {exec} from 'child_process'
+import {serve} from './stats'
 
 const log = debug('nb-snapper')
 const args = getopt.create([
@@ -216,6 +217,7 @@ if (args.options.c) {
   log(`Fetching snapshot in schedule: ${crontab2}`)
   new CronJob(crontab, createSnapshot, null, true, 'Europe/Warsaw')
   new CronJob(crontab2, fetchSnapshot, null, true, 'Europe/Warsaw')
+  serve()
 }
 
 if (args.options.s) {
