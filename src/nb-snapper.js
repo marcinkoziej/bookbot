@@ -15,15 +15,15 @@ import {exec} from 'child_process'
 const log = debug('bookbot')
 const args = getopt.create([
   ['c', '', 'run cron'],
-  ['r', '', 'restore snapshot to db'],
-  ['R', '', 'restore snapshot'],
-  ['S', '=', 'cron string'],
-  ['F', '=', 'cron string'],
-  ['n', '=', 'snapshot name'],
-  ['s', '', 'start snapshot'],
-  ['f', '', 'fetch snapshot'],
-  ['D', '', 'delete snapshot after download'],
-  ['N', '=', 'snapshot filename'],
+  ['s', '', 'mode: start snapshot'],
+  ['f', '', 'mode: fetch snapshot'],
+  ['r', '', 'mode: restore snapshot to db'],
+  ['R', '', 'restore immediately after fetch'],
+  ['D', '', 'delete snapshot from server immedately after download'],
+  ['S', '=', 'cron schedule for starting snapshot'],
+  ['F', '=', 'cron schedule for fetching snapshot'],
+  ['n', '=', 'snapshot name (default based on current date)'],
+  ['N', '=', 'snapshot filename (default based on current date)'],
 ]).bindHelp().parseSystem()
 
 nightmareDownloadManager(nightmare)
@@ -202,7 +202,7 @@ export const fetchSnapshot = (name, filename) => {
   const bot = new NBSnapper()
   bot.fetchSnapshot(name, filename, !!args.options.D).then(() => {
 
-    if (args.options.r) {
+    if (args.options.R) {
       return bot.restoreSnapshot(filename)
     }
   })
@@ -226,7 +226,7 @@ if (args.options.f) {
 }
 
 
-if (args.options.R) {
+if (args.options.r) {
   const bot = new NBSnapper()
   bot.restoreSnapshot(args.options.N)
 }

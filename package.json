@@ -4,10 +4,11 @@
   "description": "Publication downloader",
   "main": "bookbot.js",
   "scripts": {
-    "watch": "cd src; babel -w -s inline -d ../build *.js --presets=es2015",
+    "install": "npm run build",
     "build": "cd src; babel -d ../build *.js --presets=es2015",
-    "start": "npm run build && node build/bookbot.js -c",
-    "nb-snapper": "npm run build && node build/nb-snapper.js -c -R -D"
+    "watch": "cd src; babel -w -s inline -d ../build *.js --presets=es2015",
+    "bookbot": "node build/bookbot.js",
+    "nb-snapper": "node build/nb-snapper.js"
   },
   "author": "",
   "license": "ISC",
