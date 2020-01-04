@@ -3,8 +3,8 @@ import debug from 'debug'
 const log = debug('http')
 
 export function serve() {
-  const hostname = '0.0.0.0';
-  const port = 3000;
+  const hostname = '0.0.0.0'
+  const port = process.env.PORT
 
   const server = http.createServer((req, res) => {
     res.statusCode = 200

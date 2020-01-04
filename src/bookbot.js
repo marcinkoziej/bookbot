@@ -28,7 +28,7 @@ export class Bookbot {
       port: 587,
       secure: false,
       auth: {
-        user: process.env['EMAIL'],
+        user: process.env['SMTP_USERNAME'],
         pass: process.env['SMTP_PASSWORD']
       }
     })
@@ -40,7 +40,7 @@ export class Bookbot {
     log(`send attachment ${filepath}`)
     const msg = {
       sender: process.env['EMAIL'],
-      from: `Akcja Bot <${process.env['EMAIL']}>`,
+      from: `Bot z gazetami <${process.env['EMAIL']}>`,
       bcc: process.env['TO'],
       subject: 'Dzisiejsza gazeta',
       html: 'W załącznku dzisiejsza gazeta &lt;3',
