@@ -2,7 +2,7 @@ FROM movonw/nightmarejs
 
 RUN apt-get update && \
     ( apt-get install -y postgresql-client \
-        --no-install-recommends; true ) \ # ignore man page gen error...
+        --no-install-recommends; true ) \
     && apt-get autoclean \
     && apt-get clean \
     && rm -rf /var/lib/api/lists/*
