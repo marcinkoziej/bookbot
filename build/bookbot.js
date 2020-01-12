@@ -157,19 +157,23 @@ var sundayTygodnik = exports.sundayTygodnik = function sundayTygodnik() {
   });
 };
 
-if (args.options.g) {
-  morningGazeta();
-}
-
-if (args.options.t) {
-  sundayTygodnik();
-}
-
 if (args.options.c) {
   var gazetaStr = args.options.G || '0 0 7 * * 1-6';
   var tygodnikStr = args.options.T || '0 30 7 * * 0';
-  console.log('gazeta schedule ' + gazetaStr);
-  new _cron.CronJob(gazetaStr, morningGazeta, null, true, 'Europe/Warsaw');
-  console.log('tygodnik schedule ' + tygodnikStr);
-  new _cron.CronJob(tygodnikStr, sundayTygodnik, null, true, 'Europe/Warsaw');
+  if (args.options.g) {
+    console.log('gazeta schedule ' + gazetaStr);
+    new _cron.CronJob(gazetaStr, morningGazeta, null, true, 'Europe/Warsaw');
+  }
+  if (args.options.t) {
+    console.log('tygodnik schedule ' + tygodnikStr);
+    new _cron.CronJob(tygodnikStr, sundayTygodnik, null, true, 'Europe/Warsaw');
+  }
+} else {
+  if (args.options.g) {
+    morningGazeta();
+  }
+
+  if (args.options.t) {
+    sundayTygodnik();
+  }
 }
