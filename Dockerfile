@@ -13,5 +13,7 @@ ADD . /app
 
 RUN  npm install
 
-CMD ["/usr/bin/xvfb-run", "npm", "run", "nb-snapper", "--", "-c", "-R", "-D", "-S", "0 0 18 * * *", "-F", "0 0 20 * * *"]
+ENTRYPOINT ["/usr/bin/xvfb-run"]
+
+CMD ["npm", "run", "nb-snapper", "--", "-c", "-R", "-D", "-S", "0 0 18 * * *", "-F", "0 0 20 * * *"]
 
