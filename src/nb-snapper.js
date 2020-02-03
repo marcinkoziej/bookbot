@@ -86,7 +86,7 @@ export class NBSnapper {
       return
     }
     log(`pg_restore -Fc -c -f "${filename}" url...`)
-    exec(`pg_restore -Fc -c -d ${this.database_url} "${filename}"`, {}, (err, stdout, stderr) => {
+    exec(`pg_restore -Fc --verbose --clean --no-acl --no-owner -d ${this.database_url} "${filename}"`, {}, (err, stdout, stderr) => {
       if (stdout) {
         log(stdout)
       }
