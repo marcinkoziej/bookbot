@@ -127,7 +127,7 @@ var NBSnapper = exports.NBSnapper = function () {
         log(filename + ' does not exist');
         return;
       }
-      log('pg_restore -Fc -c -f "' + filename + '" url...');
+      log('pg_restore -Fc --verbose --clean --no-acl --no-owner -d ' + this.database_url + ' -f "' + filename + '" url...');
       (0, _child_process.exec)('pg_restore -Fc --verbose --clean --no-acl --no-owner -d ' + this.database_url + ' "' + filename + '"', {}, function (err, stdout, stderr) {
         if (stdout) {
           log(stdout);
